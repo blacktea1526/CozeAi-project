@@ -1,0 +1,294 @@
+{
+  "login": [
+    {
+      "username": "admin",
+      "password": "admin123",
+      "id": "aacc"
+    },
+    {
+      "username": "user1",
+      "password": "user123",
+      "id": "11b2"
+    },
+    {
+      "id": "b9f4",
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "id": "d44f",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "09b4",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "8a31",
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "id": "15fb",
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "id": "02c0",
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "id": "b493",
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "id": "53a2",
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "id": "57a5",
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "id": "cda7",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "434e",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "0585",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "819f",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "4128",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "031b",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "2f68",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "73e1",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "cc21",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "bbca",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "3c77",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "db1c",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "8470",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "a6f9",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "09d3",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "80a4",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "f656",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "b42b",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "4031",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "9830",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "9d43",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "e731",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "88fc",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "2ec1",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "3406",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "d3c0",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "6187",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "d212",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "09c4",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "98c7",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "47cd",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "5d0a",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "5d81",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "e047",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "ea1f",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "b0f7",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "d89e",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "fe40",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "1c8e",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "ce20",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "09d1",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "17b2",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "ed1c",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "7d28",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "b0c0",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "41d1",
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "id": "6f6a",
+      "username": "admin",
+      "password": "admin123"
+    }
+  ]
+}
