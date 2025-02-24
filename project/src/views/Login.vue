@@ -33,7 +33,10 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-
+interface loginType {
+  username: string
+  password: string
+}
 const loginForm = ref<loginType>({
   username: '',
   password: '',
@@ -49,12 +52,9 @@ const rules = {
     { min: 6, max: 16, message: 'Password must be 6 to 16 characters', trigger: 'blur' },
   ],
 }
-interface loginType {
-  username: string
-  password: string
-}
+
 //模拟登录
-const loginData: loginType = {
+const loginData = {
   username: 'admin',
   password: '123456',
 }
@@ -64,7 +64,7 @@ const login = () => {
     loginForm.value.password === loginData.password
   ) {
     ElMessage.success('Login success')
-
+    localStorage.setItem('isLogin', 'true')
     router.push('/')
   } else {
     ElMessage.error('Username or password is incorrect')

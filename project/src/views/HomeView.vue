@@ -23,6 +23,7 @@
               />
             </el-select>
             <div class="dialogue-actions">
+              <el-input v-model="NewTitle" placeholder="对话名称"></el-input>
               <el-button type="primary" @click="createNewDialogue" plain>新建</el-button>
               <el-button
                 type="danger"
@@ -37,12 +38,10 @@
           <!-- 用户信息 -->
           <div class="user-section">
             <div class="user-profile">
-              <el-avatar
-                :size="60"
-                src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
-              />
-              <p class="username">用户昵称</p>
+              <el-avatar :size="60" :src="userAvatar" />
+              <p class="username">{{ userStore.userName }}</p>
               <el-link type="primary" :underline="false">编辑资料</el-link>
+              <e-button type="primary" @click="logout" class="logout-btn">退出登录</e-button>
             </div>
           </div>
 
@@ -58,6 +57,7 @@
         </el-aside>
 
         <!-- 主聊天区域 -->
+
         <el-main class="main-chat">
           <div class="chat-container">
             <div ref="chatBox" class="chat-messages">
@@ -68,17 +68,14 @@
                 :class="message.role"
               >
                 <div class="message-content">
-                  <el-avatar
-                    :size="32"
-                    :src="
-                      message.role === 'user'
-                        ? 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
-                        : 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
-                    "
-                  />
+                  <el-avatar :size="32" :src="message.role === 'user' ? userAvatar : botAvatar" />
                   <div class="message-bubble">
                     <div v-if="message.role === 'assistant'" class="typewriter">
-                      <span v-html="renderMarkdown(message.content)"></span>
+                      <span
+                        v-if="isLoading && index === chatHistory.length"
+                        class="loading-indicator"
+                      ></span>
+                      <span v-else v-html="renderMarkdown(message.content)"></span>
                     </div>
                     <div v-else v-html="renderMarkdown(message.content)"></div>
                   </div>
@@ -87,29 +84,35 @@
             </div>
 
             <!-- 输入区域 -->
-            <div class="chat-input">
-              <el-input
-                v-model="userQuery"
-                placeholder="输入消息..."
-                @keyup.enter="sendMessage"
-                class="input-box"
-              >
-                <template #append>
-                  <el-button type="primary" @click="sendMessage" icon="el-icon-position" />
-                </template>
-              </el-input>
-            </div>
+            <el-affix position="bottom" :offset="30">
+              <div class="chat-input">
+                <el-input
+                  v-model="userQuery"
+                  placeholder="输入消息..."
+                  @keyup.enter="sendMessage"
+                  class="input-box"
+                >
+                  <template #append>
+                    <el-button type="primary" @click="sendMessage" icon="el-icon-position" />
+                  </template>
+                </el-input>
+              </div>
+            </el-affix>
           </div>
         </el-main>
       </el-container>
     </el-container>
   </div>
 </template>
-
 <script setup>
-import { ref, onMounted, nextTick, watch } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { marked } from 'marked'
 import { createCoze } from '../apis/coze'
+import { userStore } from '@/stores/user'
+
+// 配置常量
+const userAvatar = userStore.userAvatar
+const botAvatar = 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
 
 // Coze配置
 const coze = createCoze({
@@ -118,6 +121,7 @@ const coze = createCoze({
 })
 
 // 状态管理
+const NewTitle = ref('')
 const currentTitle = ref('新对话')
 const currentDialogue = ref('')
 const dialogues = ref([])
@@ -125,6 +129,7 @@ const chatHistory = ref([])
 const userQuery = ref('')
 const chatBox = ref(null)
 const conversationId = ref('')
+const isLoading = ref(false)
 
 // 初始化加载对话
 onMounted(() => {
@@ -135,10 +140,11 @@ onMounted(() => {
 function loadAllDialogues() {
   const storedDialogues = localStorage.getItem('cozeDialogues')
   if (storedDialogues) {
-    const dialoguesData = JSON.parse(storedDialogues)
+    //如果存在本地存储的对话列表，则加载本地存储的对话列表
+    const dialoguesData = JSON.parse(storedDialogues) //解析本地存储的对话列表
     dialogues.value = Object.keys(dialoguesData)
     if (dialogues.value.length > 0) {
-      currentDialogue.value = dialogues.value[0]
+      currentDialogue.value = dialogues.value[0] //
       loadSelectedDialogue()
     }
   }
@@ -147,12 +153,19 @@ function loadAllDialogues() {
 // 创建新对话
 function createNewDialogue() {
   const newDialogue = `对话_${Date.now()}`
-  currentDialogue.value = newDialogue
-  dialogues.value.push(newDialogue)
+  if (!NewTitle.value.trim()) {
+    NewTitle.value = newDialogue
+  }
+
+  currentDialogue.value = NewTitle.value
+  if (!dialogues.value.includes(NewTitle.value)) {
+    dialogues.value.push(NewTitle.value)
+  }
   conversationId.value = ''
   chatHistory.value = []
   saveCurrentDialogue()
   scrollToBottom()
+  NewTitle.value = ''
 }
 
 // 删除当前对话
@@ -180,6 +193,10 @@ function loadSelectedDialogue() {
     scrollToBottom()
   }
 }
+const logout = () => {
+  localStorage.removeItem('isLogin')
+  window.location.href = '/login'
+}
 
 // 保存当前对话
 function saveCurrentDialogue() {
@@ -194,6 +211,13 @@ function saveCurrentDialogue() {
 // 发送消息
 async function sendMessage() {
   if (!userQuery.value.trim()) return
+
+  // 自动创建新对话
+  if (!currentDialogue.value) {
+    createNewDialogue()
+  }
+
+  isLoading.value = true
 
   // 添加用户消息
   const userMessage = {
@@ -219,7 +243,6 @@ async function sendMessage() {
       conversationId.value = result.conversation_id
       const answers = result.getAnswers()
 
-      // 添加AI回复
       if (answers.length > 0) {
         const aiMessage = {
           role: 'assistant',
@@ -239,10 +262,11 @@ async function sendMessage() {
       timestamp: new Date().getTime(),
     }
     chatHistory.value.push(errorMessage)
+  } finally {
+    isLoading.value = false
+    saveCurrentDialogue()
+    scrollToBottom()
   }
-
-  saveCurrentDialogue()
-  scrollToBottom()
 }
 
 // 转换聊天记录格式
@@ -297,8 +321,13 @@ const renderMarkdown = (content) => {
   return marked(content)
 }
 </script>
-
 <style lang="scss" scoped>
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 .common-layout {
   height: 100vh;
 }
@@ -309,6 +338,41 @@ const renderMarkdown = (content) => {
   display: flex;
   align-items: center;
   padding: 0 24px;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: #c4e17f;
+  border-radius: 5px 5px 0 0;
+  background-image: linear-gradient(
+    to right,
+    #c4e17f,
+    #c4e17f 12.5%,
+    #f7fdca 12.5%,
+    #f7fdca 25%,
+    #fecf71 25%,
+    #fecf71 37.5%,
+    #f0776c 37.5%,
+    #f0776c 50%,
+    #db9dbe 50%,
+    #db9dbe 62.5%,
+    #c49cde 62.5%,
+    #c49cde 75%,
+    #669ae1 75%,
+    #669ae1 87.5%,
+    #62c2e4 87.5%,
+    #62c2e4
+  );
+}
+.logout-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
 
 .sidebar {
@@ -360,7 +424,8 @@ const renderMarkdown = (content) => {
 
 .main-chat {
   padding: 0;
-  background: #f0f2f5;
+  background: #f5f7fa;
+  height: 100vh;
 
   .chat-container {
     height: 100%;
@@ -369,9 +434,9 @@ const renderMarkdown = (content) => {
 
     .chat-messages {
       flex: 1;
-      padding: 24px;
+      padding: 24px 20px;
       overflow-y: auto;
-      background: #fff;
+      background: #f3f5fa;
 
       .message {
         margin-bottom: 20px;
@@ -391,7 +456,7 @@ const renderMarkdown = (content) => {
           .message-bubble {
             padding: 12px 16px;
             border-radius: 8px;
-            background: #f5f7fa;
+            background: #fff;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 
             :deep(p) {
@@ -403,6 +468,17 @@ const renderMarkdown = (content) => {
     }
 
     .chat-input {
+      //居中
+      border-radius: 8px;
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 60px;
       padding: 20px;
       background: #fff;
       box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.05);
@@ -415,19 +491,57 @@ const renderMarkdown = (content) => {
   }
 }
 
-// 打字机动画
-@keyframes typing {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
+.loading-dots {
+  display: inline-block;
+  min-width: 3ch;
+
+  &::after {
+    content: '...';
+    animation: dotPulse 1.5s infinite;
   }
 }
 
-.typewriter {
-  overflow: hidden;
-  white-space: nowrap;
-  animation: typing 3s steps(40, end);
+@keyframes dotPulse {
+  0%,
+  20% {
+    content: '.';
+  }
+  40% {
+    content: '..';
+  }
+  60% {
+    content: '...';
+  }
+  80%,
+  100% {
+    content: '';
+  }
+}
+@keyframes dots {
+  0%,
+  20% {
+    content: '.';
+  }
+  40% {
+    content: '..';
+  }
+  60% {
+    content: '...';
+  }
+  80%,
+  100% {
+    content: '.';
+  }
+}
+
+.loading-indicator {
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  color: #333;
+}
+
+.loading-indicator .dots {
+  display: inline-block;
+  animation: dots 1.5s infinite linear;
 }
 </style>
